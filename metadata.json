@@ -1,0 +1,6 @@
+{
+  "name": "Escola de Futebol SaaS",
+  "description": "Sistema SaaS multi-tenant para gestão de escolas de futebol e futsal de base com turmas, alunos, presença digital, avaliações técnicas e cobrança PIX.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

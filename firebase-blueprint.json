@@ -1,0 +1,286 @@
+{
+  "entities": {
+    "Tenant": {
+      "title": "Tenant",
+      "description": "Escola de Futebol SaaS Tenant",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "cnpj": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "corPrimaria": { "type": "string" },
+        "plano": { "type": "string", "enum": ["free", "basic", "pro"] },
+        "statusAssinatura": { "type": "string", "enum": ["ativa", "pendente", "cancelada"] },
+        "modalidadesAtivas": { "type": "array" }
+      },
+      "required": ["nome", "plano", "statusAssinatura", "modalidadesAtivas"]
+    },
+    "Usuario": {
+      "title": "Usuario",
+      "description": "Usuário do sistema com controle de papel e acesso",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "email": { "type": "string" },
+        "papel": { "type": "string", "enum": ["master", "admin", "tecnico", "treinador", "responsavel"] },
+        "filialId": { "type": "string" },
+        "ativo": { "type": "boolean" },
+        "username": { "type": "string" },
+        "senha": { "type": "string" },
+        "precisaTrocarSenha": { "type": "boolean" },
+        "isMaster": { "type": "boolean" },
+        "telefone": { "type": "string" },
+        "fotoUrl": { "type": "string" }
+      },
+      "required": ["nome", "email", "papel", "ativo"]
+    },
+    "Filial": {
+      "title": "Filial",
+      "description": "Unidade física ou polo esportivo da escola",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "endereco": { "type": "string" },
+        "telefone": { "type": "string" },
+        "responsavelLocal": { "type": "string" }
+      },
+      "required": ["nome", "endereco", "telefone"]
+    },
+    "Categoria": {
+      "title": "Categoria",
+      "description": "Categoria etária da escola (Sub-9, Sub-11, etc.)",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "faixaEtariaMin": { "type": "number" },
+        "faixaEtariaMax": { "type": "number" },
+        "modalidade": { "type": "string", "enum": ["campo", "futsal", "ambas"] }
+      },
+      "required": ["nome", "faixaEtariaMin", "faixaEtariaMax", "modalidade"]
+    },
+    "Turma": {
+      "title": "Turma",
+      "description": "Turma de treino vinculada a uma categoria, filial e técnico",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "categoriaId": { "type": "string" },
+        "filialId": { "type": "string" },
+        "modalidade": { "type": "string", "enum": ["campo", "futsal"] },
+        "treinadorId": { "type": "string" },
+        "tecnicoId": { "type": "string" },
+        "diasHorarios": { "type": "array" },
+        "vagasMaximas": { "type": "number" },
+        "ativo": { "type": "boolean" }
+      },
+      "required": ["nome", "categoriaId", "filialId", "modalidade"]
+    },
+    "Responsavel": {
+      "title": "Responsavel",
+      "description": "Responsável legal do atleta (Pai/Mãe)",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "telefone": { "type": "string" },
+        "email": { "type": "string" },
+        "cpf": { "type": "string" },
+        "parentesco": { "type": "string" },
+        "alunosIds": { "type": "array" }
+      },
+      "required": ["nome", "telefone", "email", "alunosIds"]
+    },
+    "Aluno": {
+      "title": "Aluno",
+      "description": "Atleta matriculado na escola de futebol",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "dataNascimento": { "type": "string" },
+        "fotoUrl": { "type": "string" },
+        "documentoIdentidade": { "type": "string" },
+        "endereco": { "type": "string" },
+        "telefoneContato": { "type": "string" },
+        "responsavelId": { "type": "string" },
+        "filialId": { "type": "string" },
+        "turmaId": { "type": "string" },
+        "categoriaId": { "type": "string" },
+        "modalidade": { "type": "string", "enum": ["campo", "futsal", "ambas"] },
+        "infoMedica": { "type": "string" },
+        "status": { "type": "string", "enum": ["ativo", "inativo", "trancado"] }
+      },
+      "required": ["nome", "dataNascimento", "responsavelId", "filialId", "turmaId", "categoriaId", "status"]
+    },
+    "Matricula": {
+      "title": "Matricula",
+      "description": "Registro de matrícula do aluno",
+      "type": "object",
+      "properties": {
+        "alunoId": { "type": "string" },
+        "turmaId": { "type": "string" },
+        "dataInicio": { "type": "string" },
+        "planoContratado": { "type": "string" },
+        "valorMensalidade": { "type": "number" },
+        "status": { "type": "string", "enum": ["ativa", "trancada", "cancelada"] }
+      },
+      "required": ["alunoId", "turmaId", "dataInicio", "valorMensalidade", "status"]
+    },
+    "Treino": {
+      "title": "Treino",
+      "description": "Sessão de treino com plano pedagógico e chamada",
+      "type": "object",
+      "properties": {
+        "turmaId": { "type": "string" },
+        "data": { "type": "string" },
+        "conteudoPedagogico": { "type": "string" },
+        "treinadorId": { "type": "string" },
+        "tecnicoId": { "type": "string" },
+        "finalizado": { "type": "boolean" }
+      },
+      "required": ["turmaId", "data"]
+    },
+    "Presenca": {
+      "title": "Presenca",
+      "description": "Presença individual do atleta em uma sessão de treino",
+      "type": "object",
+      "properties": {
+        "alunoId": { "type": "string" },
+        "status": { "type": "string", "enum": ["presente", "falta", "falta_justificada", "pendente"] },
+        "observacao": { "type": "string" },
+        "dataHoraMarcacao": { "type": "string" }
+      },
+      "required": ["alunoId", "status"]
+    },
+    "AvaliacaoTecnica": {
+      "title": "AvaliacaoTecnica",
+      "description": "Boletim de avaliação física e técnica individual",
+      "type": "object",
+      "properties": {
+        "alunoId": { "type": "string" },
+        "categoriaId": { "type": "string" },
+        "modalidade": { "type": "string", "enum": ["campo", "futsal"] },
+        "avaliadorId": { "type": "string" },
+        "data": { "type": "string" },
+        "testesFisicos": { "type": "object" },
+        "fundamentosCampo": { "type": "object" },
+        "fundamentosFutsal": { "type": "object" },
+        "observacoesTecnico": { "type": "string" },
+        "notaGeral": { "type": "number" }
+      },
+      "required": ["alunoId", "categoriaId", "modalidade", "data"]
+    },
+    "Cobranca": {
+      "title": "Cobranca",
+      "description": "Cobrança de mensalidade e controle PIX",
+      "type": "object",
+      "properties": {
+        "alunoId": { "type": "string" },
+        "valor": { "type": "number" },
+        "vencimento": { "type": "string" },
+        "status": { "type": "string", "enum": ["pago", "pendente", "atrasado"] },
+        "metodoPagamento": { "type": "string" },
+        "linkPix": { "type": "string" },
+        "comprovanteUrl": { "type": "string" }
+      },
+      "required": ["alunoId", "valor", "vencimento", "status"]
+    },
+    "Contrato": {
+      "title": "Contrato",
+      "description": "Termos de adesão e contrato de matrícula",
+      "type": "object",
+      "properties": {
+        "alunoId": { "type": "string" },
+        "urlDocumento": { "type": "string" },
+        "status": { "type": "string", "enum": ["pendente", "assinado"] }
+      },
+      "required": ["alunoId", "status"]
+    },
+    "Comunicado": {
+      "title": "Comunicado",
+      "description": "Mural de recados e comunicados aos responsáveis",
+      "type": "object",
+      "properties": {
+        "titulo": { "type": "string" },
+        "mensagem": { "type": "string" },
+        "dataEnvio": { "type": "string" },
+        "destinatarios": { "type": "string" }
+      },
+      "required": ["titulo", "mensagem", "dataEnvio"]
+    },
+    "DicaTreino": {
+      "title": "DicaTreino",
+      "description": "Dicas de treino e exercícios recomendados por fundamento",
+      "type": "object",
+      "properties": {
+        "fundamentoRelacionado": { "type": "string" },
+        "titulo": { "type": "string" },
+        "descricao": { "type": "string" },
+        "modalidade": { "type": "string", "enum": ["campo", "futsal", "ambas"] },
+        "linkVideo": { "type": "string" },
+        "categoriaEtaria": { "type": "string" }
+      },
+      "required": ["fundamentoRelacionado", "titulo", "descricao", "modalidade"]
+    }
+  },
+  "firestore": {
+    "/tenants/{tenantId}": {
+      "schema": "Tenant",
+      "description": "Dados da escolinha de futebol (Tenant)"
+    },
+    "/tenants/{tenantId}/filiais/{filialId}": {
+      "schema": "Filial",
+      "description": "Unidades e polos esportivos"
+    },
+    "/tenants/{tenantId}/usuarios/{usuarioId}": {
+      "schema": "Usuario",
+      "description": "Usuários do sistema (Master, Admin, Técnico, Responsável)"
+    },
+    "/tenants/{tenantId}/categorias/{categoriaId}": {
+      "schema": "Categoria",
+      "description": "Categorias de idade (Sub-9, Sub-11, etc.)"
+    },
+    "/tenants/{tenantId}/turmas/{turmaId}": {
+      "schema": "Turma",
+      "description": "Turmas de treino"
+    },
+    "/tenants/{tenantId}/responsaveis/{responsavelId}": {
+      "schema": "Responsavel",
+      "description": "Pais e responsáveis cadastrados"
+    },
+    "/tenants/{tenantId}/alunos/{alunoId}": {
+      "schema": "Aluno",
+      "description": "Alunos matriculados"
+    },
+    "/tenants/{tenantId}/matriculas/{matriculaId}": {
+      "schema": "Matricula",
+      "description": "Matrículas dos atletas"
+    },
+    "/tenants/{tenantId}/treinos/{treinoId}": {
+      "schema": "Treino",
+      "description": "Sessões de treino e plano pedagógico"
+    },
+    "/tenants/{tenantId}/treinos/{treinoId}/presencas/{alunoId}": {
+      "schema": "Presenca",
+      "description": "Chamada e frequência de treinos"
+    },
+    "/tenants/{tenantId}/avaliacoesTecnicas/{avaliacaoId}": {
+      "schema": "AvaliacaoTecnica",
+      "description": "Avaliações técnicas e testes físicos"
+    },
+    "/tenants/{tenantId}/cobrancas/{cobrancaId}": {
+      "schema": "Cobranca",
+      "description": "Mensalidades e pagamentos PIX"
+    },
+    "/tenants/{tenantId}/contratos/{contratoId}": {
+      "schema": "Contrato",
+      "description": "Contratos e termos de adesão"
+    },
+    "/tenants/{tenantId}/comunicados/{comunicadoId}": {
+      "schema": "Comunicado",
+      "description": "Mural de avisos e comunicados"
+    },
+    "/tenants/{tenantId}/dicasTreino/{dicaId}": {
+      "schema": "DicaTreino",
+      "description": "Dicas de treino e exercícios por fundamento"
+    }
+  }
+}

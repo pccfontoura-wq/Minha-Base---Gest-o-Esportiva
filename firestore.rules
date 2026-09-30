@@ -1,0 +1,134 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128;
+    }
+
+    function isValidPayload() {
+      return request.resource.data is map && request.resource.data.keys().size() <= 50;
+    }
+
+    // Multi-tenant architecture for Minha Base - Gestão Esportiva
+    match /tenants/{tenantId} {
+      allow read: if true;
+      allow create, update: if isValidId(tenantId) && isValidPayload();
+      allow delete: if isValidId(tenantId);
+
+      // Filiais
+      match /filiais/{filialId} {
+        allow read: if true;
+        allow create, update: if isValidId(filialId) && isValidPayload();
+        allow delete: if isValidId(filialId);
+      }
+
+      // Coleção 'usuarios' (nome, email, papel, filialId, ativo)
+      match /usuarios/{usuarioId} {
+        allow read: if true;
+        allow create, update: if isValidId(usuarioId) && isValidPayload();
+        allow delete: if isValidId(usuarioId);
+      }
+
+      // Categorias (Sub-07 a Sub-17)
+      match /categorias/{categoriaId} {
+        allow read: if true;
+        allow create, update: if isValidId(categoriaId) && isValidPayload();
+        allow delete: if isValidId(categoriaId);
+      }
+
+      // Turmas
+      match /turmas/{turmaId} {
+        allow read: if true;
+        allow create, update: if isValidId(turmaId) && isValidPayload();
+        allow delete: if isValidId(turmaId);
+      }
+
+      // Responsáveis
+      match /responsaveis/{responsavelId} {
+        allow read: if true;
+        allow create, update: if isValidId(responsavelId) && isValidPayload();
+        allow delete: if isValidId(responsavelId);
+      }
+
+      // Alunos (Atletas)
+      match /alunos/{alunoId} {
+        allow read: if true;
+        allow create, update: if isValidId(alunoId) && isValidPayload();
+        allow delete: if isValidId(alunoId);
+      }
+
+      // Matrículas
+      match /matriculas/{matriculaId} {
+        allow read: if true;
+        allow create, update: if isValidId(matriculaId) && isValidPayload();
+        allow delete: if isValidId(matriculaId);
+      }
+
+      // Treinos e Chamada Digital de Presença
+      match /treinos/{treinoId} {
+        allow read: if true;
+        allow create, update: if isValidId(treinoId) && isValidPayload();
+        allow delete: if isValidId(treinoId);
+
+        match /presencas/{alunoId} {
+          allow read: if true;
+          allow create, update: if isValidId(alunoId) && isValidPayload();
+          allow delete: if isValidId(alunoId);
+        }
+      }
+
+      // Avaliações Técnicas & Boletins (Campo & Futsal)
+      match /avaliacoesTecnicas/{avaliacaoId} {
+        allow read: if true;
+        allow create, update: if isValidId(avaliacaoId) && isValidPayload();
+        allow delete: if isValidId(avaliacaoId);
+      }
+
+      // Financeiro & Mensalidades com PIX
+      match /cobrancas/{cobrancaId} {
+        allow read: if true;
+        allow create, update: if isValidId(cobrancaId) && isValidPayload();
+        allow delete: if isValidId(cobrancaId);
+      }
+
+      // Contratos Digitais
+      match /contratos/{contratoId} {
+        allow read: if true;
+        allow create, update: if isValidId(contratoId) && isValidPayload();
+        allow delete: if isValidId(contratoId);
+      }
+
+      // Dicas de Treino
+      match /dicasTreino/{dicaId} {
+        allow read: if true;
+        allow create, update: if isValidId(dicaId) && isValidPayload();
+        allow delete: if isValidId(dicaId);
+      }
+
+      // Mural de Comunicados
+      match /comunicados/{comunicadoId} {
+        allow read: if true;
+        allow create, update: if isValidId(comunicadoId) && isValidPayload();
+        allow delete: if isValidId(comunicadoId);
+      }
+
+      // Subcoleções adicionais do tenant
+      match /{subcollection}/{docId} {
+        allow read: if true;
+        allow create, update: if isValidId(docId) && isValidPayload();
+        allow delete: if isValidId(docId);
+      }
+    }
+
+    // Test connection document
+    match /test/{docId} {
+      allow read: if true;
+    }
+
+    // Default global fallback
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
